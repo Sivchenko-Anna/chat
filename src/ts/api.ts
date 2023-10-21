@@ -1,9 +1,30 @@
 import Cookies from "js-cookie";
-import { VARIABLES } from "./variables.js";
+import { VARIABLES } from "./variables";
+
+interface UserDataRequest {
+	email: string;
+	name: string;
+	token: string;
+}
+
+interface User {
+	email: string;
+	name: string;
+}
+
+interface Messages {
+	text: string;
+	updatedAt: string;
+	user: User;
+}
+
+interface MessagesRequest {
+	messages: Messages[];
+}
 
 // * функция запроса для авторизации
 
-export async function receiveCodeByEmail(email: string) {
+export async function receiveCodeByEmail(email: string): Promise<void> {
 	try {
 		const response = await fetch(VARIABLES.API.SERVER_URL, {
 			method: "POST",
@@ -12,8 +33,6 @@ export async function receiveCodeByEmail(email: string) {
 			},
 			body: JSON.stringify({ email }),
 		});
-		const answer = await response.json();
-		console.log(answer);
 
 		if (!response.ok) {
 			console.log("Error from the server");
@@ -25,7 +44,7 @@ export async function receiveCodeByEmail(email: string) {
 
 // * функция получения данных пользователя
 
-export async function getUserDataRequest(token: string) {
+export async function getUserDataRequest(token: string): Promise<UserDataRequest | boolean> {
 	try {
 		const response = await fetch(VARIABLES.API.USER_URL, {
 			method: "GET",
@@ -37,7 +56,8 @@ export async function getUserDataRequest(token: string) {
 		if (!response.ok) {
 			console.log("Error from the server");
 		}
-		return await response.json();
+		const data = await response.json();
+		return data;
 	} catch (err) {
 		console.log((err as Error).message);
 		return false;
@@ -46,7 +66,7 @@ export async function getUserDataRequest(token: string) {
 
 // * функция смены имени
 
-export async function changeUserName(name: string) {
+export async function changeUserName(name: string): Promise<void | boolean> {
 	try {
 		const token = Cookies.get("token");
 		const response = await fetch(VARIABLES.API.SERVER_URL, {
@@ -69,7 +89,7 @@ export async function changeUserName(name: string) {
 
 // * функция получения истории сообщений
 
-export async function getMessageHistory() {
+export async function getMessageHistory(): Promise<MessagesRequest | boolean> {
 	try {
 		const token = Cookies.get("token");
 		const response = await fetch(VARIABLES.API.MESSAGE_URL, {
@@ -83,6 +103,7 @@ export async function getMessageHistory() {
 			console.log("Error from the server with getMessageHistory");
 		}
 		const data = await response.json();
+		console.log(data);
 		return data;
 	} catch (err) {
 		console.log((err as Error).message);

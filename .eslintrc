@@ -14,9 +14,7 @@
 		"localStorage": true
 	},
 	"settings": {
-		"import/resolver": {
-			"typescript": {}
-		}
+		"import/resolver": { "node": { "extensions": [".js", ".jsx", ".ts", ".tsx"] } }
 	},
 	"rules": {
 		"import/extensions": [

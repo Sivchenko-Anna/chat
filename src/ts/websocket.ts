@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
-import { VARIABLES } from "./variables.js";
-import { createMessage } from "./message.js";
-import { scrollToEnd } from "./utils.js";
+import { VARIABLES } from "./variables";
+import { createMessage } from "./message";
+import { scrollToEnd } from "./utils";
 
 let socket: WebSocket | null = null;
 
@@ -37,7 +37,7 @@ async function parseMessage(event: CustomEvent): Promise<void> {
 
 // * функция отлова закрытия соединения с Web Socket
 
-export function handleClose() {
+export function handleClose(): number | null {
 	console.log("WebSocket is closed");
 	const token = Cookies.get("token");
 	return token ? setTimeout(() => connectToWebSocket(token), 1000) : null;
@@ -45,7 +45,7 @@ export function handleClose() {
 
 // * функция подключения к Web Socket
 
-export function connectToWebSocket(token: string) {
+export function connectToWebSocket(token: string): void {
 	try {
 		if (socket !== null && socket.readyState === 1) {
 			console.log("соединение уже открыто");
@@ -61,7 +61,7 @@ export function connectToWebSocket(token: string) {
 
 // * функция отправки сообщения всем клиентам
 
-export function sendWebSoket(text: string) {
+export function sendWebSoket(text: string): void {
 	try {
 		if (!socket) {
 			console.log("!socket");
@@ -75,7 +75,7 @@ export function sendWebSoket(text: string) {
 
 // * функция закрытия соединения с Web Socket
 
-export function closeWebSocket() {
+export function closeWebSocket(): void {
 	if (!socket) {
 		console.log("!socket");
 		return;

@@ -1,9 +1,9 @@
 import Cookies from "js-cookie";
-import { VARIABLES, MODAL, MESSAGE } from "./variables.js";
-import { clearInput, modalChange, isValueEmpty, isEmailValid, scrollToEnd } from "./utils.js";
-import { receiveCodeByEmail, getUserDataRequest, changeUserName } from "./api.js";
-import { renderMessages } from "./message.js";
-import { connectToWebSocket, sendWebSoket, closeWebSocket } from "./websocket.js";
+import { VARIABLES, MODAL, MESSAGE } from "./variables";
+import { clearInput, modalChange, isValueEmpty, isEmailValid, scrollToEnd } from "./utils";
+import { receiveCodeByEmail, getUserDataRequest, changeUserName } from "./api";
+import { renderMessages } from "./message";
+import { connectToWebSocket, sendWebSoket, closeWebSocket } from "./websocket";
 
 async function handleAuthenticationForm(event: Event) {
 	try {

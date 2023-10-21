@@ -1,11 +1,11 @@
 import Cookies from "js-cookie";
-import { VARIABLES, MESSAGE } from "./variables.js";
-import { getCurrentTime } from "./utils.js";
-import { getMessageHistory } from "./api.js";
+import { VARIABLES, MESSAGE } from "./variables";
+import { getCurrentTime } from "./utils";
+import { getMessageHistory } from "./api";
 
 // * функция добавления стиля расположения сообщения
 
-export function addClassToMessage(sender: string) {
+export function addClassToMessage(sender: string): void {
 	if (!MESSAGE.CONTAINER) {
 		return;
 	}
@@ -35,17 +35,17 @@ interface Message {
 
 // * функция создания сообщения
 
-export function createMessage({ userName, text, time, email }: Message) {
+export function createMessage({ userName, text, time, email }: Message): Promise<HTMLDivElement> {
 	const sender = email === Cookies.get("email") ? "I" : "COMPANION";
 	if (!MESSAGE.SENDER || !MESSAGE.TEXT || !MESSAGE.TIME) {
-		return;
+		throw new Error("Some required fields are missing!");
 	}
 	MESSAGE.SENDER.textContent = userName;
 	MESSAGE.TEXT.textContent = text;
 	MESSAGE.TIME.textContent = getCurrentTime(time);
 	addClassToMessage(sender);
 	const message = (VARIABLES.MESSAGE_TEMPLATE as HTMLTemplateElement).content.cloneNode(true);
-	return message;
+	return message as HTMLDivElement;
 }
 
 const messageHistory = {
