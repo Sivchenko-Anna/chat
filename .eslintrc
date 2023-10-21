@@ -1,49 +1,49 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "extends": [
-    "airbnb", 
-    "prettier",
-    "plugin:prettier/recommended", 
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "plugins": ["prettier", "@typescript-eslint"],
-  "globals": {
-    "window": true,
-    "document": true,
-    "localStorage": true
-  },
-  "settings": {
-    "import/resolver": {
-      "typescript": {}
-    }
-  },
-  "rules": {
-    "import/extensions": [
-      "error",
-      "ignorePackages",
-      {
-        "js": "never",
-        "jsx": "never",
-        "ts": "never",
-        "tsx": "never"
-      }
-    ],
-    "prettier/prettier": ["error", {"endOfLine": "auto"}],
-    "no-unused-vars": "warn",
-    "no-console": "off",
-    "func-names": "off",
-    "object-shorthand": "off",
-    "max-classes-per-file": ["error", 10],
-    "import/prefer-default-export": "off",
-    "prefer-const": "warn",
-    "no-var": "error",
-    "for-direction": "error",
-    "no-shadow": "error",
-    "@typescript-eslint/no-unused-vars": ["error"],
-    "@typescript-eslint/explicit-module-boundary-types": "error",
-    "@typescript-eslint/no-explicit-any": "error",
-    "@typescript-eslint/no-non-null-assertion": "error",
-    "@typescript-eslint/explicit-function-return-type": ["error"]
-  }
+	"parser": "@typescript-eslint/parser",
+	"extends": [
+		"airbnb",
+		"prettier",
+		"plugin:prettier/recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"plugins": ["prettier", "@typescript-eslint"],
+	"globals": {
+		"window": true,
+		"document": true,
+		"localStorage": true
+	},
+	"settings": {
+		"import/resolver": {
+			"typescript": {}
+		}
+	},
+	"rules": {
+		"import/extensions": [
+			"error",
+			"ignorePackages",
+			{
+				"js": "never",
+				"jsx": "never",
+				"ts": "never",
+				"tsx": "never"
+			}
+		],
+		"prettier/prettier": ["error", { "endOfLine": "auto" }],
+		"no-unused-vars": "warn",
+		"no-console": "off",
+		"func-names": "off",
+		"object-shorthand": "off",
+		"max-classes-per-file": ["error", 10],
+		"import/prefer-default-export": "off",
+		"prefer-const": "warn",
+		"no-var": "error",
+		"for-direction": "error",
+		"no-shadow": "error",
+		"@typescript-eslint/no-unused-vars": ["error"],
+		"@typescript-eslint/explicit-module-boundary-types": "error",
+		"@typescript-eslint/no-explicit-any": "error",
+		"@typescript-eslint/no-non-null-assertion": "error",
+		"@typescript-eslint/explicit-function-return-type": ["error"]
+	}
 }
