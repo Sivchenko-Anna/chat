@@ -5,7 +5,7 @@ import { receiveCodeByEmail, getUserDataRequest, changeUserName } from "./api";
 import { renderMessages } from "./message";
 import { connectToWebSocket, sendWebSoket, closeWebSocket } from "./websocket";
 
-async function handleAuthenticationForm(event: Event) {
+async function handleAuthenticationForm(event: Event): Promise<void> {
 	try {
 		event.preventDefault();
 		if (!MODAL.AUTHORIZATION.EMAIL) {
@@ -30,7 +30,7 @@ async function handleAuthenticationForm(event: Event) {
 	}
 }
 
-async function handleVerificationForm(event: Event) {
+async function handleVerificationForm(event: Event): Promise<void> {
 	try {
 		event.preventDefault();
 		if (!MODAL.VERIFICATION.CODE || !MODAL.VERIFICATION.DIALOG || !VARIABLES.CHAT) {
@@ -38,11 +38,10 @@ async function handleVerificationForm(event: Event) {
 		}
 		const token = MODAL.VERIFICATION.CODE.value;
 		const response = await getUserDataRequest(token);
-		if (response) {
+		if (typeof response === "object" && response !== null) {
 			Cookies.set("token", token, { expires: 3 });
 			Cookies.set("email", response.email);
 			Cookies.set("name", response.name);
-			// connectToWebSocket(Cookies.get("token"));
 			const tokenCookie = Cookies.get("token");
 			if (tokenCookie) {
 				connectToWebSocket(tokenCookie);
@@ -62,7 +61,7 @@ async function handleVerificationForm(event: Event) {
 	}
 }
 
-async function handleSettinsForm(event: Event) {
+async function handleSettinsForm(event: Event): Promise<void> {
 	try {
 		event.preventDefault();
 		if (!MODAL.SETTINGS.NAME || !MODAL.SETTINGS.DIALOG) {
@@ -85,7 +84,7 @@ async function handleSettinsForm(event: Event) {
 	}
 }
 
-async function handleSendMessageForm(event: Event) {
+async function handleSendMessageForm(event: Event): Promise<void> {
 	event.preventDefault();
 	if (!MESSAGE.INPUT) {
 		return;
@@ -105,22 +104,23 @@ MODAL.VERIFICATION.FORM.addEventListener("submit", handleVerificationForm);
 MODAL.SETTINGS.FORM.addEventListener("submit", handleSettinsForm);
 VARIABLES.MESSAGE_FORM.addEventListener("submit", handleSendMessageForm);
 
-MODAL.AUTHORIZATION.BTN_ENTER.addEventListener(
-	"click",
-	() => modalChange(MODAL.AUTHORIZATION.DIALOG, MODAL.VERIFICATION.DIALOG),
-	MODAL.AUTHORIZATION.FORM.reset(),
-);
+function handleBtnEnterClick(): void {
+	MODAL.AUTHORIZATION.FORM.reset();
+	modalChange(MODAL.AUTHORIZATION.DIALOG, MODAL.VERIFICATION.DIALOG);
+}
+
+MODAL.AUTHORIZATION.BTN_ENTER.addEventListener("click", handleBtnEnterClick);
 
 VARIABLES.SETTINGS_BTN.addEventListener("click", () => {
 	MODAL.SETTINGS.DIALOG.showModal();
-	MODAL.SETTINGS.NAME.value = Cookies.get("name");
+	MODAL.SETTINGS.NAME.value = Cookies.get("name") || "";
 });
 
 MODAL.SETTINGS.BTN_CLOSE.addEventListener("click", () => {
 	MODAL.SETTINGS.DIALOG.close();
 });
 
-function authorization() {
+function authorization(): void {
 	if (!MODAL.AUTHORIZATION.DIALOG || !MODAL.AUTHORIZATION.FORM || !MODAL.AUTHORIZATION.EMAIL) {
 		return;
 	}
@@ -141,7 +141,7 @@ VARIABLES.EXIT_BTN.addEventListener("click", () => {
 	VARIABLES.CHAT.classList.add("hidden");
 });
 
-function initialization() {
+function initialization(): void {
 	const token = Cookies.get("token");
 	if (!VARIABLES.CHAT) {
 		return;

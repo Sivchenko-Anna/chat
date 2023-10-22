@@ -103,7 +103,6 @@ export async function getMessageHistory(): Promise<MessagesRequest | boolean> {
 			console.log("Error from the server with getMessageHistory");
 		}
 		const data = await response.json();
-		console.log(data);
 		return data;
 	} catch (err) {
 		console.log((err as Error).message);

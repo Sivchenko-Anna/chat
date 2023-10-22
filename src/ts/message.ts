@@ -17,16 +17,7 @@ export function addClassToMessage(sender: string): void {
 	}
 }
 
-interface User {
-	user: {
-		name: string;
-		email: string;
-	};
-	text: string;
-	createdAt: string;
-}
-
-interface Message {
+interface CreateMessageArgs {
 	userName: string | null;
 	text: string | null;
 	time: string;
@@ -35,7 +26,7 @@ interface Message {
 
 // * функция создания сообщения
 
-export function createMessage({ userName, text, time, email }: Message): Promise<HTMLDivElement> {
+export function createMessage({ userName, text, time, email }: CreateMessageArgs): HTMLDivElement {
 	const sender = email === Cookies.get("email") ? "I" : "COMPANION";
 	if (!MESSAGE.SENDER || !MESSAGE.TEXT || !MESSAGE.TIME) {
 		throw new Error("Some required fields are missing!");
@@ -48,58 +39,73 @@ export function createMessage({ userName, text, time, email }: Message): Promise
 	return message as HTMLDivElement;
 }
 
-const messageHistory = {
-	messageArray: [],
-	currentMessage: 0,
-	nextMessages: 20,
-};
+interface User {
+	email: string;
+	name: string;
+}
 
-async function loadMessagesHistory() {
+interface Messages {
+	text: string;
+	updatedAt: string;
+	user: User;
+}
+
+let loadedMessages: Messages[] = [];
+let currentMessage = 0;
+const nextMessages = 20;
+
+async function loadMessagesHistory(): Promise<void> {
 	const messagesData = await getMessageHistory();
-	messageHistory.messageArray = messagesData.messages;
+	if (typeof messagesData !== "boolean") {
+		loadedMessages = messagesData.messages;
+	}
 }
 
 // * функция рендера сообщений
 
-export async function renderMessages() {
+export async function renderMessages(): Promise<void> {
 	if (!VARIABLES.CHAT_WINDOW) {
 		return;
 	}
+
 	const prevScrollHeight = VARIABLES.CHAT_WINDOW.scrollHeight;
 	await loadMessagesHistory();
 
-	const messagesForRender = messageHistory.messageArray
-		.slice(
-			messageHistory.currentMessage,
-			messageHistory.currentMessage + messageHistory.nextMessages,
-		)
+	const messagesForRender = loadedMessages
+		.slice(currentMessage, currentMessage + nextMessages)
 		.reverse();
-	const messagesPromises = messagesForRender.map((element: User) => {
-		const { user, text, createdAt } = element;
-		return createMessage({
-			userName: user.name,
+	const messagesPromises = messagesForRender.map((element) => {
+		const {
+			user: { email, name },
 			text,
-			time: createdAt,
-			email: user.email,
+			updatedAt,
+		} = element;
+		return createMessage({
+			userName: name,
+			text,
+			time: updatedAt,
+			email: email,
 		});
 	});
 
 	if (!VARIABLES.CHAT_SCREEN) {
 		return;
 	}
+
 	const messages = await Promise.all(messagesPromises);
 	VARIABLES.CHAT_SCREEN.prepend(...messages);
 	const validMessages = messages.filter((message) => message !== undefined) as Node[];
 	VARIABLES.CHAT_SCREEN.prepend(...validMessages);
 	const newScrollHeight = VARIABLES.CHAT_WINDOW.scrollHeight;
 	VARIABLES.CHAT_WINDOW.scrollTop += newScrollHeight - prevScrollHeight;
-
-	messageHistory.currentMessage += messageHistory.nextMessages;
+	currentMessage += nextMessages;
 }
 
 (VARIABLES.CHAT_WINDOW as HTMLElement).addEventListener("scroll", () => {
 	if (!VARIABLES.CHAT_WINDOW) {
 		return;
 	}
-	return VARIABLES.CHAT_WINDOW.scrollTop === 0 && renderMessages();
+	if (VARIABLES.CHAT_WINDOW.scrollTop === 0) {
+		renderMessages();
+	}
 });
