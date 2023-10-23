@@ -39,5 +39,5 @@ npm install
 ```
 5. Запустите проект
 ```sh
-npm run dev
+npm run start
 ```
